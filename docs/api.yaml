@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Сервис отправки push-уведомлений для организации
+  description: |-
+    Дипломная работа Шульги Артёма P34111
+  contact:
+    email: artemshulga03@gmail.com
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080/pushes/api/v1
+tags:
+  - name: Отправка уведомлений
+paths:
+  /send:
+    post:
+      tags:
+        - Отправка уведомлений
+      summary: Отправка push-уведомления
+      description: Отправить push-уведомление определенному устройству согласно его ID
+      requestBody:
+        description: Тело отправляемого уведомления
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+        required: true
+      responses:
+        '200':
+          description: Успешная отправка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSuccessResponse'
+        '400':
+          description: Ошибка пользовательскового ввода
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required: [device_id, title, body]
+      properties:
+        device_id:
+          type: string
+          example: 0796949b-4005-484a-b8d1-d8d81c70bc3a
+          format: uuid
+        title:
+          type: string
+          example: Заголовок push-уведомления
+          minLength: 1
+        body:
+          type: string
+          example: Текст push-уведомления
+          minLength: 1
+    NotificationSuccessResponse:
+      type: object
+      properties:
+        push_id:
+          type: string
+          example: 54ecd42a-0c1a-4ed0-baf5-4b9d5a7f1849
+    ErrorResponse:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: причина ошибки в человекочитаемом виде

@@ -15,15 +15,14 @@ const (
 	PushStatusNacked     = PushStatus("NACKED")
 )
 
-// TODO: validation, add validation for empty strings
 type Push struct {
 	ID        uuid.UUID  `db:"uuid"`
-	Title     string     `db:"title" validate:"required"`
-	Text      string     `db:"text" validate:"required"`
+	Title     string     `db:"title" validate:"min=1"`
+	Text      string     `db:"text" validate:"min=1"`
 	Status    PushStatus `db:"status"`
 	CreatedAt time.Time  `db:"created_at"`
 	UpdatedAt time.Time  `db:"updated_at"`
-	DeviceID  string     `db:"device_id" validate:"required"`
+	DeviceID  string     `db:"device_id" validate:"min=1"`
 }
 
 type PushService interface {

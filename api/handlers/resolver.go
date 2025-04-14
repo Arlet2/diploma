@@ -7,9 +7,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type Resolver struct {
-	pushService core.PushService
-}
+type (
+	Resolver struct {
+		pushService core.PushService
+		app         *fiber.App
+		cfg         Config
+	}
+
+	Config struct {
+		ListenHost string
+	}
+)
 
 var (
 	path = "/pushes/api/v1"
@@ -17,20 +25,28 @@ var (
 
 func NewResolver(
 	pushService core.PushService,
+	cfg Config,
 ) Resolver {
 	return Resolver{
 		pushService: pushService,
+		app:         fiber.New(fiber.Config{}),
+		cfg:         cfg,
 	}
 }
 
 func (r *Resolver) Run() {
-	app := fiber.New(fiber.Config{})
+	r.app.Post(path+"/send", r.send)
 
-	app.Post(path+"/send", r.send)
-
-	// TODO: normal config
-	err := app.Listen(":8080")
+	slog.Info("http server started at " + r.cfg.ListenHost)
+	err := r.app.Listen(r.cfg.ListenHost)
 	if err != nil {
 		slog.Error("error with listening: " + err.Error())
+	}
+}
+
+func (r *Resolver) Shutdown() {
+	err := r.app.Shutdown()
+	if err != nil {
+		slog.Error("error with shutdown: " + err.Error())
 	}
 }

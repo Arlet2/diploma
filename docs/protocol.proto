@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+package protocol;
+option go_package = "/protocol";
+
 message ServerMessage {
     oneof server_message {
         PushNotification push_notification = 1;    

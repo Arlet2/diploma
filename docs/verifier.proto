@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package verifier;
+option go_package = "/verifier";
+
+service Verifier {
+    rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+}
+
+message VerifyTokenRequest {
+    string token = 1;
+}
+
+message VerifyTokenResponse {
+    enum Status {
+        STATUS_OK = 0;
+        STATUS_DEVICE_NOT_FOUND = 1;
+        STATUS_BAD_TOKEN = 2; // token cannot be parsed or signed with incorrect secret
+        STATUS_TOKEN_EXPIRED = 3;
+        STATUS_INTERNAL_SERVER_ERROR = 4;
+    }
+
+    string device_id = 1;
+    Status status = 2;
+}

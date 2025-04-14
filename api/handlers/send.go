@@ -17,12 +17,9 @@ func (r *Resolver) send(c *fiber.Ctx) error {
 
 	pushID, err := r.pushService.SendPush(c.UserContext(), push)
 	if err != nil {
-		// TODO: switch case by errors
-		return c.Status(fiber.StatusInternalServerError).JSON(
-			ErrorPresenter{
-				Reason: "[debug] " + err.Error(),
-			},
-		)
+		resp, status := mapError(err)
+
+		return c.Status(status).JSON(resp)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(

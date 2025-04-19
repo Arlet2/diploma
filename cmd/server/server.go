@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"push_diploma/api/handlers"
+	nats_r "push_diploma/api/nats"
 	"push_diploma/internal/service/push"
 	"push_diploma/internal/service/transport"
 	push_s "push_diploma/internal/store/push"
@@ -101,7 +102,10 @@ func run(c *cli.Context) error {
 	pushService := push.NewService(pushStore, transport)
 	resolver := handlers.NewResolver(pushService, handlers.Config{ListenHost: c.String("server-host")})
 
+	natsResolver := nats_r.NewResolver(js, pushService)
+
 	go resolver.Run()
+	go natsResolver.Run(ctx)
 
 	<-ctx.Done()
 	resolver.Shutdown()

@@ -27,6 +27,7 @@ type Push struct {
 
 type PushService interface {
 	SendPush(ctx context.Context, push Push) (id uuid.UUID, err error)
+	UpdateStatus(ctx context.Context, pushID uuid.UUID, newStatus PushStatus) error
 }
 
 type PushStore interface {

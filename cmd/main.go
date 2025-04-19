@@ -5,6 +5,7 @@ import (
 	"os"
 	"push_diploma/cmd/migrate"
 	"push_diploma/cmd/server"
+	"push_diploma/cmd/ws"
 
 	"github.com/urfave/cli/v2"
 )
@@ -17,6 +18,7 @@ var app = cli.App{
 	Commands: []*cli.Command{
 		&migrate.Cmd,
 		&server.Cmd,
+		&ws.Cmd,
 	},
 }
 

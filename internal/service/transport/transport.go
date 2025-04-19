@@ -46,3 +46,7 @@ func (t *transport) createDeviceStreamName(deviceID string) string {
 func (t *transport) createDeviceTopic(deviceID string) string {
 	return fmt.Sprintf("device-topic-%s", deviceID)
 }
+
+func (t *transport) createListenerTopic() string {
+	return "listener-topic"
+}

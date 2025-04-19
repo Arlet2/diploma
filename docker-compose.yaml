@@ -1,0 +1,58 @@
+services:
+  push-server:
+    env_file:
+      - .env
+    image: push-diploma:1.0
+    command: server
+    networks:
+      - service-net
+    depends_on:
+      - nats
+      - db
+      - migrate
+    ports:
+      - 8080:8080
+  migrate:
+    env_file:
+      - .env
+    image: push-diploma:1.0
+    command: migrate
+    networks:
+      - service-net
+    depends_on:
+      - db
+  push-ws:
+    env_file:
+      - .env
+    image: push-diploma:1.0
+    command: ws
+    networks:
+      - service-net
+    depends_on:
+      - nats
+    ports:
+      - 9000:9000
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=diploma
+    post_start:
+      - command: psql -c 'CREATE DATABASE diploma'
+        user: postgres
+    networks:
+      - service-net
+    ports:
+      - 5432:5432
+  nats:
+    image: nats
+    command: ["-js"]
+    networks:
+      - service-net
+  auth-server:
+    image: auth-diploma:1.0
+    networks:
+      - service-net
+
+networks:
+  service-net:

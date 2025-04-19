@@ -27,7 +27,7 @@ func (s *store) Create(ctx context.Context, push core.Push) error {
 		`INSERT INTO pushes
 		(id, created_at, updated_at, device_id, title, text, status) 
 		VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-		push.ID, time.Now().UTC(), time.Now().UTC(), push.DeviceID, push.Title, push.Text, push.Status,
+		push.ID, push.CreatedAt.UTC(), time.Now().UTC(), push.DeviceID, push.Title, push.Text, push.Status,
 	)
 	if err != nil {
 		return errors.New("error with push creating: " + err.Error())

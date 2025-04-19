@@ -2,6 +2,7 @@ package transport
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"push_diploma/internal/core"
 
@@ -28,4 +29,21 @@ func (t *transport) SendPush(ctx context.Context, push core.Push) (seqNumber uin
 	}
 
 	return ack.Sequence, nil
+}
+
+func (t *transport) SendStatusUpdate(ctx context.Context, statusUpdate core.StatusUpdateMsg) error {
+	data, err := json.Marshal(statusUpdate)
+	if err != nil {
+		return errors.New("error with marshalling json: " + err.Error())
+	}
+
+	_, err = t.js.Publish(ctx,
+		t.createListenerTopic(),
+		data,
+	)
+	if err != nil {
+		return errors.New("error with publishing message to nats: " + err.Error())
+	}
+
+	return nil
 }

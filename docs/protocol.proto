@@ -28,6 +28,6 @@ message DeliveryAck {
         STATUS_NACK = 1;
     }
 
-    string push_id = 1;
+    string push_id = 1; // uuid format
     Status status = 2;
 }
